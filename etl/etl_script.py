@@ -57,7 +57,17 @@ df = pd.read_sql_query('select * from users', source_engine)
 df["first_name"] = df["first_name"].apply(lambda x: re.sub("\s.*", "", x))
 df["last_name"] = df["last_name"].apply(lambda x: re.sub("\s.*", "", x))
 
+def matcher(email):
+    if (re.search("orangehome.", email)) == None and (re.search("planetall.", email)) == None and (re.search("poboxes.", email)) == None:
+        return email
+    else:
+        return "Match"
+
+df["email"] = df["email"].apply(lambda x: matcher(x))
+df = df[df["email"] != "Match"]
+
 df.to_sql("Users", destination_engine)
+
 with destination_engine.connect() as connection:
     connection.execute(text("ALTER TABLE \"Users\" ADD PRIMARY KEY (id);"))
     connection.commit()
