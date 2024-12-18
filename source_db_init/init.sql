@@ -26,14 +26,22 @@ INSERT INTO users (first_name, last_name, email, date_of_birth) VALUES
 ('Stephanie', 'Wright', 'stephwright@yahoo.com', '1997-05-10'),
 ('Jennifer', 'Katz', 'jenniferkatz@poboxes.info', '1986-07-22');
 
--- CREATE TABLE authors (
---     id SERIAL PRIMARY KEY,
---     first_name VARCHAR(50),
---     last_name VARCHAR(50),
---     country_of_origin VARCHAR(50),
---     date_of_birth DATE
--- )
+CREATE TABLE authors (
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    date_of_birth DATE,
+    city_of_origin VARCHAR(50),
+    country_of_origin VARCHAR(50),
+    PRIMARY KEY(first_name, last_name)
+);
 
--- INSERT INTO authors (first_name, last_namem country_of_origin, date_of_birth) VALUES
--- ("Fyodor", "Dostoevsky", "Russia", "11-11-1821"),
--- ("George", "Orwell", "England", )
+INSERT INTO authors (first_name, last_name, date_of_birth, city_of_origin, country_of_origin) VALUES
+('Fyodor', 'Dostoevsky', '1821-11-11', 'Moscow', 'Russia'),
+('Boris', 'Pasternak', '1890-02-10', 'Moscow', 'Russia'),
+('Leo', 'Tolstoy', '1828-09-09', 'Yasnaya Polyana', 'Russia'),
+('Charles', 'Dickens', '1812-02-07', 'Portsmouth', 'England'),
+('Virginia', 'Woolf', '1882-01-25', 'London', 'England'),
+('Mary', 'Shelley', '1797-08-30', 'London', 'England'),
+('Walter', 'Whiteman', '1819-05-31', 'West Hills', 'United States'),
+('H.P.', 'Lovecraft', '1890-08-20', 'Providence', 'United States'),
+('Cormac', 'McCarthy', '1933-07-20', 'Providence', 'United States');
