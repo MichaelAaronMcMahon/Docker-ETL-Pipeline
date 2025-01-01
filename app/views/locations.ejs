@@ -1,0 +1,32 @@
+<html lang="en">
+
+<body>
+    <a href="/">Home</a>
+    <br>
+    <div class='container' id='container'>
+        <h1>Locations</h1>
+    </div>
+    <form action="/locations" method="POST">
+        <label>City<input type="text" name="city_of_origin" /></label>
+        <label>Country<input type="text" name="country_of_origin" /></label>
+        <button type="submit">Search</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>City</th>
+                <th>Country</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% records.rows.forEach(record => { %>
+            <tr>
+                <td><%= record.city_of_origin %></td>
+                <td><%= record.country_of_origin %></td>
+            </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    
+</body>
+</html>

@@ -1,0 +1,46 @@
+<html lang="en">
+
+<body>
+    <a href="/">Home</a>
+    <br>
+    <div class='container' id='container'>
+        <h1>Users</h1>
+    </div>
+    <form action="/users" method="POST">
+        <label>ID<input type="text" name="id" /></label>
+        <label>First Name <input type="text" name="first_name" /></label>
+        <label>Last Name<input type="text" name="last_name" /></label>
+        <label>Email<input type="text" name="email" /></label>
+        <label>Favorite Author First Name<input type="text" name="fav_author_first_name" /></label>
+        <label>Favorite Author Last Name<input type="text" name="fav_author_last_name" /></label>
+        <button type="submit">Search</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Date of Birth</th>
+                <th>Favorite author first name</th>
+                <th>Favorite author last name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% records.rows.forEach(record => { %>
+            <tr>
+                <td><%= record.id %></td>
+                <td><%= record.first_name %></td>
+                <td><%= record.last_name %></td>
+                <td><%= record.email %></td>
+                <td><%= record.date_of_birth %></td>
+                <td><%= record.fav_author_first_name %></td>
+                <td><%= record.fav_author_last_name %></td>
+            </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    
+</body>
+</html>

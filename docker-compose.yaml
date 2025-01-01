@@ -1,5 +1,18 @@
 services:
-  source_postgres:
+  # source_mysql:
+  #   image: mysql
+  #   networks:
+  #     - etl_network
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: 'McMahon'
+  #     MYSQL_ROOT_HOST: 'root'
+  #     MYSQL_DATABASE: 'source_db'
+  #     MYSQL_PASSWORD: 'McMahon'
+  #     MYSQL_ALLOW_EMPTY_PASSWORD: 1
+  #   volumes:
+  #     - ./source_db_init/init2.sql:/docker-entrypoint-initdb.d/init2.sql
+
+  source_postgres-1:
     image: postgres:15
     ports:
       - '5433:5432'
@@ -10,12 +23,25 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: McMahon
     volumes:
-      - ./source_db_init/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./source_db_init/init1.sql:/docker-entrypoint-initdb.d/init1.sql
+
+  source_postgres-2:
+    image: postgres:15
+    ports:
+      - '5435:5432'
+    networks:
+      - etl_network
+    environment:
+      POSTGRES_DB: source_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: McMahon
+    volumes:
+      - ./source_db_init/init2.sql:/docker-entrypoint-initdb.d/init2.sql
 
   destination_postgres:
     image: postgres:15
     ports:
-      - '5434:5432'
+      - '5432:5432'
     networks:
       - etl_network
     environment:
@@ -31,8 +57,24 @@ services:
     networks:
       - etl_network
     depends_on:
-      - source_postgres
+      - source_postgres-1
+      - source_postgres-2
       - destination_postgres
+  
+  node_app:
+    build:
+      context: ./app 
+      dockerfile: Dockerfile 
+    ports:
+      - '3000:3000'
+    command: ['node', 'server.js']
+    networks:
+      - etl_network
+    depends_on:
+      etl_script:
+        condition: service_completed_successfully
+    
+
 
 networks:
   etl_network:

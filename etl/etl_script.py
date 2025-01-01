@@ -24,17 +24,25 @@ def wait_for_postgres(host, max_retries=5, delay_seconds=5):
     return False
 
 #Connect to the source database
-if not wait_for_postgres(host="source_postgres"):
+if not wait_for_postgres(host="source_postgres-1"):
     exit(1)
 
 print("Starting ETL script...")
 
-source_config = {
+source_postgres_1_config = {
     'dbname': 'source_db',
     'user': 'postgres',
     'password': 'McMahon',
-    'host': 'source_postgres',
+    'host': 'source_postgres-1',
     'port': '5433:5432'
+}
+
+source_postgres_2_config = {
+    'dbname': 'source_db',
+    'user': 'postgres',
+    'password': 'McMahon',
+    'host': 'source_postgres-2',
+    'port': '5435:5432'
 }
 
 destination_config = {
@@ -45,17 +53,35 @@ destination_config = {
     'port': '5434:5432'
 }
 
-#Create engines for the source and destination databases:
-source_engine = create_engine(url="postgresql://{0}:{1}@{2}/{3}".format(
-    source_config['user'], source_config['password'], source_config['host'], source_config['dbname']
+source_postgres_1_engine = create_engine(url="postgresql://{0}:{1}@{2}/{3}".format(
+    source_postgres_1_config['user'], source_postgres_1_config['password'], source_postgres_1_config['host'], source_postgres_1_config['dbname']
+))
+source_postgres_2_engine = create_engine(url="postgresql://{0}:{1}@{2}/{3}".format(
+    source_postgres_2_config['user'], source_postgres_2_config['password'], source_postgres_2_config['host'], source_postgres_2_config['dbname']
 ))
 destination_engine = create_engine(url="postgresql://{0}:{1}@{2}/{3}".format(
     destination_config['user'], destination_config['password'], destination_config['host'], destination_config['dbname']
 ))
 
 #Read the Users and Authors tables from the source database into dataframes:
-dfUsers = pd.read_sql_query('select * from users', source_engine)
-dfAuthors = pd.read_sql_query('select * from authors', source_engine)
+dfUsers1 = pd.read_sql_query('select * from users', source_postgres_1_engine)
+dfUsers2 = pd.read_sql_query('select * from users', source_postgres_2_engine)
+dfUsers = pd.concat([dfUsers1, dfUsers2], ignore_index=True)
+
+dfAuthors1 = pd.read_sql_query('select * from authors', source_postgres_1_engine)
+dfAuthors2 = pd.read_sql_query('select * from authors', source_postgres_2_engine)
+dfAuthors = pd.concat([dfAuthors1, dfAuthors2], ignore_index=True)
+
+dfFavorite1 = pd.read_sql_query('select * from favorite_authors', source_postgres_1_engine)
+dfFavorite2 = pd.read_sql_query('select * from favorite_authors', source_postgres_2_engine)
+dfFavorite = pd.concat([dfFavorite1, dfFavorite2], ignore_index=True)
+dfFavorite = dfFavorite.rename(columns={'user_id': 'id'})
+#print(dfFavorite)
+dfUsers = dfUsers.join(dfFavorite.set_index('id'), on='id')
+dfUsers = dfUsers.rename(columns={'author_first_name': 'fav_author_first_name', 'author_last_name': 'fav_author_last_name', })
+print(dfUsers)
+print(dfAuthors)
+print(dfFavorite)
 
 #Remove additional text after whitespaces in the name fields, such as middle initials and last name suffixes:
 dfUsers["first_name"] = dfUsers["first_name"].apply(lambda x: re.sub("\s.*", "", x))
@@ -89,6 +115,7 @@ with destination_engine.connect() as connection:
     connection.execute(text("ALTER TABLE \"Users\" ADD PRIMARY KEY (id);"))
     connection.execute(text("ALTER TABLE \"Authors\" ADD PRIMARY KEY (first_name, last_name);"))
     connection.execute(text("ALTER TABLE \"Locations\" ADD PRIMARY KEY (city_of_origin);"))
+    connection.execute(text("ALTER TABLE \"Authors\" ADD FOREIGN KEY (city_of_origin) REFERENCES \"Locations\"(city_of_origin);"))
     connection.commit()
 
 print("Ending ETL script...")
