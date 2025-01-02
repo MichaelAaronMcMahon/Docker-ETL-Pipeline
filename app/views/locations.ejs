@@ -6,10 +6,19 @@
     <div class='container' id='container'>
         <h1>Locations</h1>
     </div>
+    <p>Search:</p>
     <form action="/locations" method="POST">
+        <input type="hidden" name="action" value="search">
         <label>City<input type="text" name="city_of_origin" /></label>
         <label>Country<input type="text" name="country_of_origin" /></label>
         <button type="submit">Search</button>
+    </form>
+    <p>Insert:</p>
+    <form action="/locations" method="POST">
+        <input type="hidden" name="action" value="insert">
+        <label>City<input type="text" name="city_of_origin" /></label>
+        <label>Country<input type="text" name="country_of_origin" /></label>
+        <button type="submit">Insert</button>
     </form>
     <table>
         <thead>

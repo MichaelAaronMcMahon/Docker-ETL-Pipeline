@@ -6,7 +6,9 @@
     <div class='container' id='container'>
         <h1>Users</h1>
     </div>
+    <p>Search:</p>
     <form action="/users" method="POST">
+        <input type="hidden" name="action" value="search">
         <label>ID<input type="text" name="id" /></label>
         <label>First Name <input type="text" name="first_name" /></label>
         <label>Last Name<input type="text" name="last_name" /></label>
@@ -14,6 +16,18 @@
         <label>Favorite Author First Name<input type="text" name="fav_author_first_name" /></label>
         <label>Favorite Author Last Name<input type="text" name="fav_author_last_name" /></label>
         <button type="submit">Search</button>
+    </form>
+    <p>Insert:</p>
+    <form action="/users" method="POST">
+        <input type="hidden" name="action" value="insert">
+        <label>ID<input type="text" name="id" /></label>
+        <label>First Name <input type="text" name="first_name" /></label>
+        <label>Last Name<input type="text" name="last_name" /></label>
+        <label>Email<input type="text" name="email" /></label>
+        <label>Date of Birth<input type="date" name="date_of_birth" /></label>
+        <label>Favorite Author First Name<input type="text" name="fav_author_first_name" /></label>
+        <label>Favorite Author Last Name<input type="text" name="fav_author_last_name" /></label>
+        <button type="submit">Insert</button>
     </form>
     <table>
         <thead>

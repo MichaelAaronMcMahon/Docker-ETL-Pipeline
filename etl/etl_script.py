@@ -53,6 +53,7 @@ destination_config = {
     'port': '5434:5432'
 }
 
+#Create connections to the postgre databases
 source_postgres_1_engine = create_engine(url="postgresql://{0}:{1}@{2}/{3}".format(
     source_postgres_1_config['user'], source_postgres_1_config['password'], source_postgres_1_config['host'], source_postgres_1_config['dbname']
 ))
@@ -63,7 +64,7 @@ destination_engine = create_engine(url="postgresql://{0}:{1}@{2}/{3}".format(
     destination_config['user'], destination_config['password'], destination_config['host'], destination_config['dbname']
 ))
 
-#Read the Users and Authors tables from the source database into dataframes:
+#Read the Users, Authors and Favorite_Authors tables from the source databases into dataframes and concatenate them:
 dfUsers1 = pd.read_sql_query('select * from users', source_postgres_1_engine)
 dfUsers2 = pd.read_sql_query('select * from users', source_postgres_2_engine)
 dfUsers = pd.concat([dfUsers1, dfUsers2], ignore_index=True)
@@ -76,7 +77,9 @@ dfFavorite1 = pd.read_sql_query('select * from favorite_authors', source_postgre
 dfFavorite2 = pd.read_sql_query('select * from favorite_authors', source_postgres_2_engine)
 dfFavorite = pd.concat([dfFavorite1, dfFavorite2], ignore_index=True)
 dfFavorite = dfFavorite.rename(columns={'user_id': 'id'})
-#print(dfFavorite)
+
+#Every user has at most one favorite author, so the Favorite Authors table does not need to exist.
+#Instead, we can left join it with Users on Users.id = FavoriteAuthors.id 
 dfUsers = dfUsers.join(dfFavorite.set_index('id'), on='id')
 dfUsers = dfUsers.rename(columns={'author_first_name': 'fav_author_first_name', 'author_last_name': 'fav_author_last_name', })
 print(dfUsers)
@@ -112,10 +115,15 @@ dfAuthorsR2.to_sql("Locations", destination_engine)
 
 #Set the primary key constraints for the tables in the destination database
 with destination_engine.connect() as connection:
+    #Drop the index columns
+    connection.execute(text("ALTER TABLE \"Users\" DROP COLUMN index;"))
+    connection.execute(text("ALTER TABLE \"Authors\" DROP COLUMN index;"))
+    connection.execute(text("ALTER TABLE \"Locations\" DROP COLUMN index;"))
     connection.execute(text("ALTER TABLE \"Users\" ADD PRIMARY KEY (id);"))
     connection.execute(text("ALTER TABLE \"Authors\" ADD PRIMARY KEY (first_name, last_name);"))
     connection.execute(text("ALTER TABLE \"Locations\" ADD PRIMARY KEY (city_of_origin);"))
     connection.execute(text("ALTER TABLE \"Authors\" ADD FOREIGN KEY (city_of_origin) REFERENCES \"Locations\"(city_of_origin);"))
+    connection.execute(text("ALTER TABLE \"Users\" ADD FOREIGN KEY (fav_author_first_name, fav_author_last_name) REFERENCES \"Authors\"(first_name, last_name);"))
     connection.commit()
 
 print("Ending ETL script...")

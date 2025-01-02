@@ -42,7 +42,7 @@ INSERT INTO authors (first_name, last_name, date_of_birth, city_of_origin, count
 ('Charles', 'Dickens', '1812-02-07', 'Portsmouth', 'England'),
 ('Virginia', 'Woolf', '1882-01-25', 'London', 'England'),
 ('Mary', 'Shelley', '1797-08-30', 'London', 'England'),
-('Walter', 'Whiteman', '1819-05-31', 'West Hills', 'United States'),
+('Walter', 'Whitman', '1819-05-31', 'West Hills', 'United States'),
 ('H.P.', 'Lovecraft', '1890-08-20', 'Providence', 'United States'),
 ('Cormac', 'McCarthy', '1933-07-20', 'Providence', 'United States');
 
@@ -55,7 +55,7 @@ CREATE TABLE favorite_authors(
     PRIMARY KEY (user_id, author_first_name, author_last_name)
 );
 
-INSERT INTO favorite_authors VALUES
+INSERT INTO favorite_authors (user_id, author_first_name, author_last_name) VALUES 
 (1, 'Fyodor', 'Dostoevsky'),
 (2, 'Cormac', 'McCarthy'),
 (3, 'Virginia', 'Woolf'),
@@ -71,4 +71,6 @@ INSERT INTO favorite_authors VALUES
 (13, 'Mary', 'Shelley'),
 (14, 'Charles', 'Dickens'),
 (15, 'Charles', 'Dickens'),
-(16, 'Cormac', 'McCarthy');
+(16, 'Walter', 'Whitman'),
+(17, 'Virginia', 'Woolf'),
+(18, 'Walter', 'Whitman');
