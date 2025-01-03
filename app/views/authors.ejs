@@ -23,6 +23,22 @@
         <label>Date of Birth<input type="date" name="date_of_birth" /></label>
         <button type="submit">Insert</button>
     </form>
+    <p>Delete:</p>
+    <form action="/authors" method="POST">
+        <input type="hidden" name="action" value="delete">
+        <label>First Name <input type="text" name="first_name" /></label>
+        <label>Last Name<input type="text" name="last_name" /></label>
+        <button type="submit">Delete</button>
+    </form>
+    <p>Update:</p>
+    <form action="/authors" method="POST">
+        <input type="hidden" name="action" value="update">
+        <label>First Name <input type="text" name="first_name" /></label>
+        <label>Last Name<input type="text" name="last_name" /></label>
+        <label>City of Origin<input type="text" name="city_of_origin" /></label>
+        <label>Date of Birth<input type="date" name="date_of_birth" /></label>
+        <button type="submit">Update</button>
+    </form>
     <table>
         <thead>
             <tr>

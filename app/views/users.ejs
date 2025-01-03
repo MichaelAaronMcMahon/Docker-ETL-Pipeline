@@ -29,6 +29,24 @@
         <label>Favorite Author Last Name<input type="text" name="fav_author_last_name" /></label>
         <button type="submit">Insert</button>
     </form>
+    <p>Delete:</p>
+    <form action="/users" method="POST">
+        <input type="hidden" name="action" value="delete">
+        <label>ID<input type="text" name="id" /></label>
+        <button type="submit">Delete</button>
+    </form>
+    <p>Update:</p>
+    <form action="/users" method="POST">
+        <input type="hidden" name="action" value="update">
+        <label>ID<input type="text" name="id" /></label>
+        <label>First Name <input type="text" name="first_name" /></label>
+        <label>Last Name<input type="text" name="last_name" /></label>
+        <label>Email<input type="text" name="email" /></label>
+        <label>Date of Birth<input type="date" name="date_of_birth" /></label>
+        <label>Favorite Author First Name<input type="text" name="fav_author_first_name" /></label>
+        <label>Favorite Author Last Name<input type="text" name="fav_author_last_name" /></label>
+        <button type="submit">Update</button>
+    </form>
     <table>
         <thead>
             <tr>

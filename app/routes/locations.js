@@ -3,14 +3,14 @@ const router = express.Router()
 
 var pg = require('pg')
 //Docker compose:
-//const conn = new pg.Client({ user: 'postgres', host: 'destination_postgres', database: 'destination_db', password: 'McMahon', port: '5432' })
+const conn = new pg.Client({ user: 'postgres', host: 'destination_postgres', database: 'destination_db', password: 'McMahon', port: '5432' })
 //Local:
-const conn = new pg.Client({ user: 'postgres', host: 'localhost', database: 'destination_db', password: 'McMahon', port: '5432' })
+//const conn = new pg.Client({ user: 'postgres', host: 'localhost', database: 'destination_db', password: 'McMahon', port: '5432' })
 conn.connect()
 
 router.get('/', (req, res) => {
     async function getQuery(res){
-        var query = await conn.query("SELECT * FROM \"Locations\"")
+        var query = await conn.query("SELECT * FROM \"Locations\" ORDER BY city_of_origin")
         res.render('locations', {records: query})
         res.render('locations', {records: query})
     }
@@ -23,7 +23,7 @@ router.post('/', (req, res) => {
         async function getQuery(res){
             var query = await conn.query("SELECT * FROM \"Locations\" WHERE " +
             "city_of_origin LIKE \'%" + req.body.city_of_origin + "%\' " +
-            "AND country_of_origin LIKE \'%" + req.body.country_of_origin + "%\'" )
+            "AND country_of_origin LIKE \'%" + req.body.country_of_origin + "%\' ORDER BY city_of_origin" )
             //var query = await conn.query("SELECT * FROM \"Users\"")
             res.render('locations', {records: query})
         }
@@ -39,10 +39,24 @@ router.post('/', (req, res) => {
                   .catch(err => {
                     console.error('Error inserting row:', err);
                   })
-            var query = await conn.query("SELECT * FROM \"Locations\"")
+            var query = await conn.query("SELECT * FROM \"Locations\" ORDER BY city_of_origin")
             res.render('locations', {records: query})
         }
         insert(res)
+    }
+    else if(req.body.action == "delete"){
+        async function deleteRow(res){
+            conn.query("DELETE FROM \"Locations\" WHERE city_of_origin = \'" + req.body.city_of_origin + "\'")
+                .then(res => {
+                    console.log('Deleted row:', res.rows[0]);
+                  })
+                  .catch(err => {
+                    console.error('Error Deleting row:', err);
+                  })
+            var query = await conn.query("SELECT * FROM \"Locations\" ORDER BY city_of_origin")
+            res.render('locations', {records: query})
+        }
+        deleteRow(res)
     } 
     
 });

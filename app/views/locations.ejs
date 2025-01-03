@@ -20,6 +20,12 @@
         <label>Country<input type="text" name="country_of_origin" /></label>
         <button type="submit">Insert</button>
     </form>
+    <p>Delete:</p>
+    <form action="/locations" method="POST">
+        <input type="hidden" name="action" value="delete">
+        <label>City<input type="text" name="city_of_origin" /></label>
+        <button type="submit">Delete</button>
+    </form>
     <table>
         <thead>
             <tr>
