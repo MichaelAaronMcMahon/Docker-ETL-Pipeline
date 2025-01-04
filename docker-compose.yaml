@@ -1,16 +1,4 @@
 services:
-  # source_mysql:
-  #   image: mysql
-  #   networks:
-  #     - etl_network
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: 'McMahon'
-  #     MYSQL_ROOT_HOST: 'root'
-  #     MYSQL_DATABASE: 'source_db'
-  #     MYSQL_PASSWORD: 'McMahon'
-  #     MYSQL_ALLOW_EMPTY_PASSWORD: 1
-  #   volumes:
-  #     - ./source_db_init/init2.sql:/docker-entrypoint-initdb.d/init2.sql
 
   source_postgres-1:
     image: postgres:15
