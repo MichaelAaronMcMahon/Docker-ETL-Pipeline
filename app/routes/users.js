@@ -9,7 +9,6 @@ const conn = new pg.Client({ user: 'postgres', host: 'destination_postgres', dat
 conn.connect()
 
 router.get('/', (req, res) => {
-//app.get('/users', (req, res) => {
     async function getQuery(res){
         var query = await conn.query("SELECT * FROM \"Users\" ORDER BY id")
         res.render('users', {records: query})
@@ -19,7 +18,6 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-//app.post('/users', (req, res) => {
     console.log(req.body)
     if(req.body.action == "search"){
         async function getQuery(res){
@@ -33,7 +31,6 @@ router.post('/', (req, res) => {
             "AND email LIKE \'%" + req.body.email + "%\' " +
             "AND fav_author_first_name LIKE \'%" + req.body.fav_author_first_name + "%\' " +
             "AND fav_author_last_name LIKE \'%" + req.body.fav_author_last_name + "%\' ORDER BY id")
-            //var query = await conn.query("SELECT * FROM \"Users\"")
             res.render('users', {records: query})
         }
         getQuery(res)
@@ -86,7 +83,6 @@ router.post('/', (req, res) => {
                             console.error('Error Deleting row:', err);
                           })
                 }
-                //conn.query("UPDATE \"Users\" SET WHERE id = " + req.body.id)
                 var query = await conn.query("SELECT * FROM \"Users\" ORDER BY id")
                 res.render('users', {records: query})
             }
